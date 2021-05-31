@@ -75,6 +75,7 @@ public:
 		imu_nh.param("angular_velocity_stdev", angular_stdev, 0.02 * (M_PI / 180.0));	// check default by MPU6000 spec
 		imu_nh.param("orientation_stdev", orientation_stdev, 1.0);
 		imu_nh.param("magnetic_stdev", mag_stdev, 0.0);
+		imu_nh.param("lpf_alpha", lpf_alpha, 0.0);
 
 		setup_covariance(linear_acceleration_cov, linear_stdev);
 		setup_covariance(angular_velocity_cov, angular_stdev);
@@ -83,6 +84,7 @@ public:
 		setup_covariance(unk_orientation_cov, 0.0);
 
 		imu_pub = imu_nh.advertise<sensor_msgs::Imu>("data", 10);
+		imu_filtered_pub = imu_nh.advertise<sensor_msgs::Imu>("data_filtered", 10);
 		magn_pub = imu_nh.advertise<sensor_msgs::MagneticField>("mag", 10);
 		temp_imu_pub = imu_nh.advertise<sensor_msgs::Temperature>("temperature_imu", 10);
 		temp_baro_pub = imu_nh.advertise<sensor_msgs::Temperature>("temperature_baro", 10);
@@ -110,12 +112,17 @@ private:
 	std::string frame_id;
 
 	ros::Publisher imu_pub;
+	ros::Publisher imu_filtered_pub;
 	ros::Publisher imu_raw_pub;
 	ros::Publisher magn_pub;
 	ros::Publisher temp_imu_pub;
 	ros::Publisher temp_baro_pub;
 	ros::Publisher static_press_pub;
 	ros::Publisher diff_press_pub;
+	
+	double lpf_alpha = 0.0;
+	float imu_y_filtered = 0.0;
+	// float imu_y;
 
 	bool has_hr_imu;
 	bool has_raw_imu;
@@ -165,6 +172,7 @@ private:
 	{
 		auto imu_ned_msg = boost::make_shared<sensor_msgs::Imu>();
 		auto imu_enu_msg = boost::make_shared<sensor_msgs::Imu>();
+		auto imu_enu_filtered_msg = boost::make_shared<sensor_msgs::Imu>();
 
 		// Fill message header
 		imu_enu_msg->header = m_uas->synchronized_header(frame_id, time_boot_ms);
@@ -197,6 +205,12 @@ private:
 			imu_enu_msg->linear_acceleration_covariance[0] = -1;
 			imu_ned_msg->linear_acceleration_covariance[0] = -1;
 		}
+		
+		imu_enu_filtered_msg = imu_enu_msg; // copy everything, then smooth
+		
+		imu_y_filtered = lpf_alpha * imu_y_filtered + (1 - lpf_alpha) * imu_enu_msg->linear_acceleration.y;
+
+		
 
 		/** Store attitude in base_link ENU
 		 *  @snippet src/plugins/imu.cpp store_enu
@@ -217,6 +231,7 @@ private:
 		 */
 		// [pub_enu]
 		imu_pub.publish(imu_enu_msg);
+		imu_filtered_pub.publish(imu_enu_filtered_msg);
 		// [pub_enu]
 	}
 
