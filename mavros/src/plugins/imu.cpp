@@ -206,12 +206,6 @@ private:
 			imu_ned_msg->linear_acceleration_covariance[0] = -1;
 		}
 		
-		imu_enu_filtered_msg = imu_enu_msg; // copy everything, then smooth
-		
-		imu_y_filtered = lpf_alpha * imu_y_filtered + (1 - lpf_alpha) * imu_enu_msg->linear_acceleration.y;
-
-		
-
 		/** Store attitude in base_link ENU
 		 *  @snippet src/plugins/imu.cpp store_enu
 		 */
@@ -231,6 +225,11 @@ private:
 		 */
 		// [pub_enu]
 		imu_pub.publish(imu_enu_msg);
+
+		imu_enu_filtered_msg = imu_enu_msg; // copy everything, then smooth
+		imu_y_filtered = lpf_alpha * imu_y_filtered + (1 - lpf_alpha) * imu_enu_msg->linear_acceleration.y;
+		imu_enu_filtered_msg->linear_acceleration.y = imu_y_filtered;
+
 		imu_filtered_pub.publish(imu_enu_filtered_msg);
 		// [pub_enu]
 	}
