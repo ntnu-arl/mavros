@@ -75,7 +75,9 @@ public:
 		imu_nh.param("angular_velocity_stdev", angular_stdev, 0.02 * (M_PI / 180.0));	// check default by MPU6000 spec
 		imu_nh.param("orientation_stdev", orientation_stdev, 1.0);
 		imu_nh.param("magnetic_stdev", mag_stdev, 0.0);
-		imu_nh.param("lpf_alpha", lpf_alpha, 0.0);
+		imu_nh.param("lpf_alphaX", lpf_alphaX, 0.0);
+		imu_nh.param("lpf_alphaY", lpf_alphaY, 0.0);
+		imu_nh.param("lpf_alphaZ", lpf_alphaZ, 0.0);
 
 		setup_covariance(linear_acceleration_cov, linear_stdev);
 		setup_covariance(angular_velocity_cov, angular_stdev);
@@ -120,9 +122,17 @@ private:
 	ros::Publisher static_press_pub;
 	ros::Publisher diff_press_pub;
 	
-	double lpf_alpha = 0.0;
-	float imu_y_filtered = 0.0;
-	// float imu_y;
+	double lpf_alphaX = 0.0;
+	double lpf_alphaY = 0.0;
+	double lpf_alphaZ = 0.0;
+	double imu_x_filtered = 0.0;
+	double imu_y_filtered = 0.0;
+	double imu_z_filtered = 0.0;
+	// median filter acc 
+	double acc_x_k1 = 0.0, acc_x_k2 = 0.0, acc_x_k3 = 0.0;
+	double acc_y_k1 = 0.0, acc_y_k2 = 0.0, acc_y_k3 = 0.0;
+	double acc_z_k1 = 0.0, acc_z_k2 = 0.0, acc_z_k3 = 0.0;
+
 
 	bool has_hr_imu;
 	bool has_raw_imu;
@@ -172,7 +182,7 @@ private:
 	{
 		auto imu_ned_msg = boost::make_shared<sensor_msgs::Imu>();
 		auto imu_enu_msg = boost::make_shared<sensor_msgs::Imu>();
-		auto imu_enu_filtered_msg = boost::make_shared<sensor_msgs::Imu>();
+		// auto imu_enu_filtered_msg = boost::make_shared<sensor_msgs::Imu>();
 
 		// Fill message header
 		imu_enu_msg->header = m_uas->synchronized_header(frame_id, time_boot_ms);
@@ -226,12 +236,25 @@ private:
 		// [pub_enu]
 		imu_pub.publish(imu_enu_msg);
 
-		imu_enu_filtered_msg = imu_enu_msg; // copy everything, then smooth
-		imu_y_filtered = lpf_alpha * imu_y_filtered + (1 - lpf_alpha) * imu_enu_msg->linear_acceleration.y;
-		imu_enu_filtered_msg->linear_acceleration.y = imu_y_filtered;
+		// imu_enu_filtered_msg = imu_enu_msg; // copy everything, then smooth
+		// imu_x_filtered = lpf_alphaX * imu_x_filtered + (1 - lpf_alphaX) * imu_enu_msg->linear_acceleration.x;
+		// imu_y_filtered = lpf_alphaY * imu_y_filtered + (1 - lpf_alphaY) * imu_enu_msg->linear_acceleration.y;
+		// imu_z_filtered = lpf_alphaZ * imu_z_filtered + (1 - lpf_alphaZ) * imu_enu_msg->linear_acceleration.z;
 
-		imu_filtered_pub.publish(imu_enu_filtered_msg);
+		// imu_enu_filtered_msg->linear_acceleration.x = imu_x_filtered;
+		// imu_enu_filtered_msg->linear_acceleration.y = imu_y_filtered;
+		// imu_enu_filtered_msg->linear_acceleration.z = imu_z_filtered;
+
+		// imu_filtered_pub.publish(imu_enu_filtered_msg);
 		// [pub_enu]
+	}
+    
+	double find_median(double x1, double x2, double x3, double x4)
+	{
+		std::vector<double> v{x1, x2, x3, x4};
+		size_t n = v.size()/2;
+		std::nth_element(v.begin(), v.begin() + n, v.end());
+		return v[n];
 	}
 
 	/**
@@ -245,6 +268,7 @@ private:
 				Eigen::Vector3d &accel_flu, Eigen::Vector3d &accel_frd)
 	{
 		auto imu_msg = boost::make_shared<sensor_msgs::Imu>();
+		auto imu_enu_filtered_msg = boost::make_shared<sensor_msgs::Imu>();
 
 		// Fill message header
 		imu_msg->header = header;
@@ -263,6 +287,37 @@ private:
 
 		// Publish message [ENU frame]
 		imu_raw_pub.publish(imu_msg);
+
+
+		imu_enu_filtered_msg = imu_msg; // copy everything, then smooth
+		// median filter
+        double acc_x_k =  imu_msg->linear_acceleration.x;
+		double acc_y_k =  imu_msg->linear_acceleration.y;
+		double acc_z_k =  imu_msg->linear_acceleration.z;
+		double acc_x_median = find_median(acc_x_k, acc_x_k1, acc_x_k2, acc_x_k3);
+		double acc_y_median = find_median(acc_y_k, acc_y_k1, acc_y_k2, acc_y_k3);
+		double acc_z_median = find_median(acc_z_k, acc_z_k1, acc_z_k2, acc_z_k3);
+		// double x_test = find_median(0.1, 0.2, 0.0, 0.4);
+		// ROS_INFO_STREAM("x_med:" << x_test);
+		// update the acc queue
+		acc_x_k3 = acc_x_k2; acc_x_k2 = acc_x_k1; acc_x_k1 = acc_x_k;
+		acc_y_k3 = acc_y_k2; acc_y_k2 = acc_y_k1; acc_y_k1 = acc_y_k;
+		acc_z_k3 = acc_z_k2; acc_z_k2 = acc_z_k1; acc_z_k1 = acc_z_k;
+
+		double ratio_median_mean = 0.3;
+		double acc_x_prime = ratio_median_mean * acc_x_median + (1.0 - ratio_median_mean)*acc_x_k;
+		double acc_y_prime = ratio_median_mean * acc_y_median + (1.0 - ratio_median_mean)*acc_y_k;
+		double acc_z_prime = ratio_median_mean * acc_z_median + (1.0 - ratio_median_mean)*acc_z_k;
+
+		imu_x_filtered = lpf_alphaX * imu_x_filtered + (1 - lpf_alphaX) * acc_x_prime; // imu_msg->linear_acceleration.x;
+		imu_y_filtered = lpf_alphaY * imu_y_filtered + (1 - lpf_alphaY) * acc_y_prime; // imu_msg->linear_acceleration.y;
+		imu_z_filtered = lpf_alphaZ * imu_z_filtered + (1 - lpf_alphaZ) * acc_z_prime; // imu_msg->linear_acceleration.z;
+
+		imu_enu_filtered_msg->linear_acceleration.x = imu_x_filtered; // TEST
+		imu_enu_filtered_msg->linear_acceleration.y = imu_y_filtered; // TEST
+		imu_enu_filtered_msg->linear_acceleration.z = imu_z_filtered;
+
+		imu_filtered_pub.publish(imu_enu_filtered_msg);
 	}
 
 	/**
