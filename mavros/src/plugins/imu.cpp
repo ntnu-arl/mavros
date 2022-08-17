@@ -23,6 +23,8 @@
 #include <sensor_msgs/Temperature.h>
 #include <sensor_msgs/FluidPressure.h>
 #include <geometry_msgs/Vector3.h>
+#include <boost/circular_buffer.hpp>
+#include <numeric>
 
 namespace mavros {
 namespace std_plugins {
@@ -40,6 +42,8 @@ static constexpr double MILLIMS2_TO_MS2 = 1.0e-3;
 static constexpr double MILLIBAR_TO_PASCAL = 1.0e2;
 //! Radians to degrees
 static constexpr double RAD_TO_DEG = 180.0 / M_PI;
+
+static constexpr int WIN_SIZE = 5;
 
 
 //! @brief IMU and attitude data publication plugin
@@ -75,6 +79,12 @@ public:
 		imu_nh.param("angular_velocity_stdev", angular_stdev, 0.02 * (M_PI / 180.0));	// check default by MPU6000 spec
 		imu_nh.param("orientation_stdev", orientation_stdev, 1.0);
 		imu_nh.param("magnetic_stdev", mag_stdev, 0.0);
+		imu_nh.param("mov_av_win_size", mov_av_win_size, 5);
+		
+
+		buffer_x.resize(mov_av_win_size);
+		buffer_y.resize(mov_av_win_size);
+		buffer_z.resize(mov_av_win_size);
 
 		setup_covariance(linear_acceleration_cov, linear_stdev);
 		setup_covariance(angular_velocity_cov, angular_stdev);
@@ -89,6 +99,7 @@ public:
 		static_press_pub = imu_nh.advertise<sensor_msgs::FluidPressure>("static_pressure", 10);
 		diff_press_pub = imu_nh.advertise<sensor_msgs::FluidPressure>("diff_pressure", 10);
 		imu_raw_pub = imu_nh.advertise<sensor_msgs::Imu>("data_raw", 10);
+		imu_filt_pub = imu_nh.advertise<sensor_msgs::Imu>("filtered", 10);
 
 		// Reset has_* flags on connection change
 		enable_connection_cb();
@@ -111,11 +122,29 @@ private:
 
 	ros::Publisher imu_pub;
 	ros::Publisher imu_raw_pub;
+	ros::Publisher imu_filt_pub;
 	ros::Publisher magn_pub;
 	ros::Publisher temp_imu_pub;
 	ros::Publisher temp_baro_pub;
 	ros::Publisher static_press_pub;
 	ros::Publisher diff_press_pub;
+
+	// boost::circular_buffer<double> buffer_x{WIN_SIZE};
+	boost::circular_buffer<double> buffer_x;
+	boost::circular_buffer<double> buffer_y;
+	boost::circular_buffer<double> buffer_z;
+	
+	int mov_av_win_size = 5;
+
+	double sum_x = 0.0; 
+	double sum_y = 0.0;
+	double sum_z = 0.0;
+
+	double mean_val_x = 0.0;
+	double mean_val_y = 0.0;
+	double mean_val_z = 0.0;
+
+	int n_msgs=0;
 
 	bool has_hr_imu;
 	bool has_raw_imu;
@@ -249,6 +278,39 @@ private:
 
 		// Publish message [ENU frame]
 		imu_raw_pub.publish(imu_msg);
+
+		// Put values in the buffer
+		auto imu_filt_msg = boost::make_shared<sensor_msgs::Imu>();
+		imu_filt_msg = imu_msg;
+		
+			sum_x =0.0; sum_y =0.0; sum_z =0.0;
+			buffer_x.push_back(imu_msg->linear_acceleration.x);
+			buffer_y.push_back(imu_msg->linear_acceleration.y);
+			buffer_z.push_back(imu_msg->linear_acceleration.z);
+
+			// x
+			for (double element : buffer_x)
+				sum_x+=element;
+			mean_val_x = sum_x/mov_av_win_size;
+			imu_filt_msg->linear_acceleration.x = mean_val_x;
+			
+			// y
+			for (double element : buffer_y)
+				sum_y+=element;
+			mean_val_y = sum_y/mov_av_win_size;
+			imu_filt_msg->linear_acceleration.y = mean_val_y;
+			
+			// z
+			for (double element : buffer_z)
+				sum_z+=element;
+			mean_val_z = sum_z/mov_av_win_size;
+			imu_filt_msg->linear_acceleration.z = mean_val_z;
+
+
+		// // Publish filtered imu msg
+		imu_filt_pub.publish(imu_filt_msg);
+
+
 	}
 
 	/**
