@@ -14,6 +14,8 @@ add_message_files(
   AttitudeTarget.msg
   BatteryStatus.msg
   CamIMUStamp.msg
+  CellularStatus.msg
+  CameraImageCaptured.msg
   CommandCode.msg
   CompanionProcessStatus.msg
   OnboardComputerStatus.msg
@@ -22,10 +24,13 @@ add_message_files(
   ESCInfoItem.msg
   ESCStatus.msg
   ESCStatusItem.msg
+  ESCTelemetry.msg
+  ESCTelemetryItem.msg
   EstimatorStatus.msg
   ExtendedState.msg
   FileEntry.msg
   GlobalPositionTarget.msg
+  GPSINPUT.msg
   GPSRAW.msg
   GPSRTK.msg
   HilActuatorControls.msg
@@ -37,9 +42,11 @@ add_message_files(
   LandingTarget.msg
   LogData.msg
   LogEntry.msg
+  MagnetometerReporter.msg
   ManualControl.msg
   Mavlink.msg
   MountControl.msg
+  NavControllerOutput.msg
   OpticalFlowRad.msg
   OverrideRCIn.msg
   Param.msg
@@ -53,9 +60,11 @@ add_message_files(
   RTKBaseline.msg
   State.msg
   StatusText.msg
+  TerrainReport.msg
   Thrust.msg
   TimesyncStatus.msg
   Trajectory.msg
+  Tunnel.msg
   VFR_HUD.msg
   VehicleInfo.msg
   Vibration.msg
@@ -68,6 +77,7 @@ add_message_files(
 add_service_files(
   DIRECTORY srv
   FILES
+  CommandAck.srv
   CommandBool.srv
   CommandHome.srv
   CommandInt.srv
@@ -119,6 +129,7 @@ catkin_package(
   INCLUDE_DIRS include
   CATKIN_DEPENDS geographic_msgs geometry_msgs message_runtime sensor_msgs std_msgs)
 
-install(DIRECTORY include/${PROJECT_NAME}/
+install(
+  DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.h")

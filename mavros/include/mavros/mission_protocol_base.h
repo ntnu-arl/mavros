@@ -220,7 +220,7 @@ std::string waypoint_to_string(const ITEM &wp)
 {
 	std::stringstream ss;
 	ss.precision(7);
-	ss << '#' << wp.seq << (wp.current ? '*' : ' ') << " F:" << wp.frame << " C:" << std::setw(3) << wp.command;
+	ss << '#' << wp.seq << (wp.current ? '*' : ' ') << " F:" << +wp.frame << " C:" << std::setw(3) << wp.command;
 	ss << " p: " <<   wp.param1 << ' ' << wp.param2 << ' ' << wp.param3 << ' ' << wp.param4 << " x: " << wp.x << " y: " << wp.y << " z: " << wp.z;
 	return ss.str();
 }
@@ -237,10 +237,10 @@ public:
 		wp_state(WP::IDLE),
 		wp_type(WP_TYPE::MISSION),
 		wp_count(0),
-		wp_retries(RETRIES_COUNT),
 		wp_cur_id(0),
 		wp_cur_active(0),
 		wp_set_active(0),
+		wp_retries(RETRIES_COUNT),
 		is_timedout(false),
 		do_pull_after_gcs(false),
 		enable_partial_push(false),
@@ -251,7 +251,7 @@ public:
 		RESCHEDULE_DT(RESCHEDULE_MS / 1000.0)
 	{ }
 
-	virtual void initialize(ros::NodeHandle *_wp_nh)
+	virtual void initialize_with_nodehandle(ros::NodeHandle *_wp_nh)
 	{
 		wp_timer = _wp_nh->createTimer(WP_TIMEOUT_DT, &MissionBase::timeout_cb, this, true);
 		wp_timer.stop();

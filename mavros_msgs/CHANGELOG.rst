@@ -2,6 +2,81 @@
 Changelog for package mavros_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.13.0 (2022-01-13)
+-------------------
+* Merge pull request `#1690 <https://github.com/mavlink/mavros/issues/1690>`_ from mavlink/fix-enum_sensor_orientation
+  Fix enum sensor_orientation
+* re-generate all coglets
+* Merge pull request `#1680 <https://github.com/mavlink/mavros/issues/1680>`_ from AndersonRayner/new_mav_frames
+  Add extra MAV_FRAMES to waypoint message
+* Merge pull request `#1677 <https://github.com/mavlink/mavros/issues/1677>`_ from AndersonRayner/add_terrain
+  Add plugin for reporting terrain height estimate from the FCU
+* More explicitly state "TerrainReport" to allow for future extension of the plugin to support other terrain messages
+* Add extra MAV_FRAMES to waypoint message as defined in https://mavlink.io/en/messages/common.html
+* Add plugin for reporting terrain height estimate from FCU
+* Contributors: Vladimir Ermakov, matt
+
+1.12.2 (2021-12-12)
+-------------------
+
+1.12.1 (2021-11-29)
+-------------------
+
+1.12.0 (2021-11-27)
+-------------------
+
+1.11.1 (2021-11-24)
+-------------------
+
+1.11.0 (2021-11-24)
+-------------------
+* msgs: use pragmas to ignore unaligned pointer warnings
+* msgs: fix convert const
+* msgs: try to hide 'unaligned pointer' warning
+* Merge pull request `#1651 <https://github.com/mavlink/mavros/issues/1651>`_ from Jaeyoung-Lim/pr-image-capture-plugin
+  Add camera plugin for interfacing with mavlink camera protocol
+* Address review comments
+* Add camera plugin for interfacing with mavlink camera protocol
+  Add camera image captured message for handling camera trigger information
+* msgs: add yaw field to GPS_INPUT
+* Contributors: Jaeyoung-Lim, Vladimir Ermakov
+
+1.10.0 (2021-11-04)
+-------------------
+* msgs: update gpsraw to have yaw field
+* Merge pull request `#1625 <https://github.com/mavlink/mavros/issues/1625>`_ from scoutdi/tunnel-plugin
+  Plugin for TUNNEL messages
+* Tunnel.msg: Generate enum with cog
+* mavros_msgs: Add Tunnel message
+* Merge pull request `#1623 <https://github.com/mavlink/mavros/issues/1623>`_ from amilcarlucas/pr/more-typo-fixes
+  More typo fixes
+* MountControl.msg: fix copy-paste
+* Contributors: Dr.-Ing. Amilcar do Carmo Lucas, Morten Fyhn Amundsen, Vladimir Ermakov
+
+1.9.0 (2021-09-09)
+------------------
+* Merge pull request `#1616 <https://github.com/mavlink/mavros/issues/1616>`_ from amilcarlucas/pr/RC_CHANNELS-mavlink2-extensions
+  Mavlink v2.0 specs for RC_CHANNELS_OVERRIDE accepts upto 18 channels.…
+* Changed OverrideRCIn to 18 channels
+* Merge pull request `#1617 <https://github.com/mavlink/mavros/issues/1617>`_ from amilcarlucas/pr/NAV_CONTROLLER_OUTPUT-plugin
+  Added NAV_CONTROLLER_OUTPUT Plugin
+* Merge pull request `#1618 <https://github.com/mavlink/mavros/issues/1618>`_ from amilcarlucas/pr/GPS_INPUT-plugin
+  Added GPS_INPUT plugin
+* Mavlink v2.0 specs for RC_CHANNELS_OVERRIDE accepts upto 18 channels. The plugin publishes channels 9 to 18 if the FCU protocol version is 2.0
+* Added NAV_CONTROLLER_OUTPUT Plugin
+* Added GPS_INPUT plugin
+* Merge branch 'master' into master
+* Update esc_status plugin with datatype change on MAVLink.
+  ESC_INFO MAVLink message was updated to have negative temperates and also at a different resolution. This commit updates those changes on this side.
+* Remove Mount_Status plugin. Add Status data to Mount_Control plugin. Remove Mount_Status message.
+* msgs: fix types for apm's esc telemetry
+* actually allocate memory for the telemetry information
+* added esc_telemetry plugin
+* Add Mount angles message for communications with ardupilotmega.
+* Remove extra message from CMakeLists.
+* Add message and service definition.
+* Contributors: Abhijith Thottumadayil Jagadeesh, André Filipe, Dr.-Ing. Amilcar do Carmo Lucas, Karthik Desai, Ricardo Marques, Russell, Vladimir Ermakov
+
 1.8.0 (2021-05-05)
 ------------------
 
