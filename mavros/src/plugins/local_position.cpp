@@ -64,6 +64,7 @@ public:
 		local_velocity_cov = lp_nh.advertise<geometry_msgs::TwistWithCovarianceStamped>("velocity_body_cov", 10);
 		local_accel = lp_nh.advertise<geometry_msgs::AccelWithCovarianceStamped>("accel", 10);
 		local_odom = lp_nh.advertise<nav_msgs::Odometry>("odom",10);
+        local_odom_in_map = lp_nh.advertise<nav_msgs::Odometry>("odom_in_map",10);
 	}
 
 	Subscriptions get_subscriptions() override {
@@ -83,6 +84,7 @@ private:
 	ros::Publisher local_velocity_cov;
 	ros::Publisher local_accel;
 	ros::Publisher local_odom;
+    ros::Publisher local_odom_in_map;
 
 	std::string frame_id;		//!< frame for Pose
 	std::string tf_frame_id;	//!< origin for TF
@@ -108,7 +110,7 @@ private:
 
 	void handle_local_position_ned(const mavlink::mavlink_message_t *msg, mavlink::common::msg::LOCAL_POSITION_NED &pos_ned)
 	{
-		has_local_position_ned = true;
+        has_local_position_ned = true;
 
 		//--------------- Transform FCU position and Velocity Data ---------------//
 		auto enu_position = ftf::transform_frame_ned_enu(Eigen::Vector3d(pos_ned.x, pos_ned.y, pos_ned.z));
@@ -122,7 +124,7 @@ private:
 		tf::quaternionMsgToEigen(enu_orientation_msg, enu_orientation);
 		auto baselink_linear = ftf::transform_frame_enu_baselink(enu_velocity, enu_orientation.inverse());
 
-		auto odom = boost::make_shared<nav_msgs::Odometry>();
+		auto odom = boost::make_shared<nav_msgs::Odometry>(); // in map_enu
 		odom->header = m_uas->synchronized_header(frame_id, pos_ned.time_boot_ms);
 		odom->child_frame_id = tf_child_frame_id;
 
@@ -131,9 +133,26 @@ private:
 		tf::vectorEigenToMsg(baselink_linear, odom->twist.twist.linear);
 		odom->twist.twist.angular = baselink_angular_msg;
 
+        auto odom_in_map = boost::make_shared<nav_msgs::Odometry>(); // in map
+        odom_in_map->header = odom->header;
+        odom_in_map->header.frame_id = "map"; // HARD CODE
+        odom_in_map->child_frame_id = tf_child_frame_id;
+        
+        odom_in_map->pose.pose.position.x = odom->pose.pose.position.y;
+        odom_in_map->pose.pose.position.y = -odom->pose.pose.position.x;
+        odom_in_map->pose.pose.position.z = odom->pose.pose.position.z;
+        
+        Eigen::Quaterniond odom_in_map_orientation = Eigen::AngleAxisd(-0.5*M_PI, Eigen::Vector3d::UnitZ()) * enu_orientation;
+        odom_in_map->pose.pose.orientation.x = odom_in_map_orientation.x();
+        odom_in_map->pose.pose.orientation.y = odom_in_map_orientation.y();
+        odom_in_map->pose.pose.orientation.z = odom_in_map_orientation.z();
+        odom_in_map->pose.pose.orientation.w = odom_in_map_orientation.w();
+        odom_in_map->twist.twist = odom->twist.twist;
+
 		// publish odom if we don't have LOCAL_POSITION_NED_COV
 		if (!has_local_position_ned_cov) {
 			local_odom.publish(odom);
+            local_odom_in_map.publish(odom_in_map);
 		}
 
 		// publish pose always
