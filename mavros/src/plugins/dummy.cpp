@@ -76,12 +76,12 @@ private:
 	}
 
 	void handle_statustext_raw(const mavlink::mavlink_message_t *msg, const mavconn::Framing f) {
-		ROS_INFO_NAMED("dummy", "Dummy::handle_statustext_raw(%p, %d) from %u.%u", msg, utils::enum_value(f), msg->sysid, msg->compid);
+		ROS_INFO_NAMED("dummy", "Dummy::handle_statustext_raw(%p, %d) from %u.%u", (void *)msg, utils::enum_value(f), msg->sysid, msg->compid);
 	}
 };
 
 }	// namespace std_plugins
 }	// namespace mavros
 
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 PLUGINLIB_EXPORT_CLASS(mavros::std_plugins::DummyPlugin, mavros::plugin::PluginBase)

@@ -55,7 +55,7 @@ public:
 		count_ = 0;
 		rtt_sum = 0;
 
-		for (int i = 0; i < window_size_; i++)
+		for (size_t i = 0; i < window_size_; i++)
 		{
 			times_[i] = curtime;
 			seq_nums_[i] = count_;
@@ -501,5 +501,5 @@ private:
 }	// namespace std_plugins
 }	// namespace mavros
 
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 PLUGINLIB_EXPORT_CLASS(mavros::std_plugins::SystemTimePlugin, mavros::plugin::PluginBase)

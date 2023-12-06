@@ -38,8 +38,8 @@ public:
 
 	WheelOdometryPlugin() : PluginBase(),
 		wo_nh("~wheel_odometry"),
-		count(0),
 		odom_mode(OM::NONE),
+		count(0),
 		raw_send(false),
 		twist_send(false),
 		tf_send(false),
@@ -588,5 +588,5 @@ private:
 }	// namespace extra_plugins
 }	// namespace mavros
 
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 PLUGINLIB_EXPORT_CLASS(mavros::extra_plugins::WheelOdometryPlugin, mavros::plugin::PluginBase)

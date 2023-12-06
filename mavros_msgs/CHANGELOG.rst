@@ -2,6 +2,32 @@
 Changelog for package mavros_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.17.0 (2023-09-09)
+-------------------
+* cog: regenerate all
+* Contributors: Vladimir Ermakov
+
+1.16.0 (2023-05-05)
+-------------------
+
+1.15.0 (2022-12-30)
+-------------------
+* Merge pull request `#1811 <https://github.com/mavlink/mavros/issues/1811>`_ from scoutdi/debug-float-array
+  Implement debug float array handler
+* Implement debug float array handler
+  Co-authored-by: Morten Fyhn Amundsen <morten.f.amundsen@scoutdi.com>
+* Contributors: Sverre Velten Rothmund, Vladimir Ermakov
+
+1.14.0 (2022-09-24)
+-------------------
+* Merge pull request `#1742 <https://github.com/mavlink/mavros/issues/1742>`_ from amilcarlucas/correct_rpm_units
+  ESCTelemetryItem.msg: correct RPM units
+* ESCTelemetryItem.msg: correct RPM units
+* Merge pull request `#1727 <https://github.com/mavlink/mavros/issues/1727>`_ from BV-OpenSource/pr-cellular-status
+  Pr cellular status
+* Add CellularStatus plugin and message
+* Contributors: Dr.-Ing. Amilcar do Carmo Lucas, Rui Mendes, Vladimir Ermakov
+
 1.13.0 (2022-01-13)
 -------------------
 * Merge pull request `#1690 <https://github.com/mavlink/mavros/issues/1690>`_ from mavlink/fix-enum_sensor_orientation

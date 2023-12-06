@@ -17,7 +17,7 @@
 #include <mavros/utils.h>
 #include <mavros/mavros_plugin.h>
 #include <mavros/setpoint_mixin.h>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 #include <eigen_conversions/eigen_msg.h>
 
 #include <geometry_msgs/PoseStamped.h>
@@ -40,18 +40,18 @@ class LandingTargetPlugin : public plugin::PluginBase,
 public:
 	LandingTargetPlugin() :
 		nh("~landing_target"),
-		tf_rate(10.0),
 		send_tf(true),
 		listen_tf(false),
+		tf_rate(10.0),
 		listen_lt(false),
-		mav_frame("LOCAL_NED"),
 		target_size_x(1.0),
 		target_size_y(1.0),
-		image_width(640),
-		image_height(480),
 		fov_x(2.0071286398),
 		fov_y(2.0071286398),
 		focal_length(2.8),
+		image_width(640),
+		image_height(480),
+		mav_frame("LOCAL_NED"),
 		land_target_type("VISION_FIDUCIAL")
 	{ }
 

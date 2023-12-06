@@ -2,6 +2,33 @@
 Changelog for package libmavconn
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.17.0 (2023-09-09)
+-------------------
+* Merge pull request `#1865 <https://github.com/mavlink/mavros/issues/1865>`_ from scoutdi/warnings
+  Fix / suppress some build warnings
+* Suppress warnings from included headers
+* Contributors: Morten Fyhn Amundsen, Vladimir Ermakov
+
+1.16.0 (2023-05-05)
+-------------------
+
+1.15.0 (2022-12-30)
+-------------------
+* Merge pull request `#1794 <https://github.com/mavlink/mavros/issues/1794>`_ from rossizero/master
+  libmavconn: fix MAVLink v1.0 output selection
+* libmavconn: fix MAVLink v1.0 output selection
+  Fix `#1787 <https://github.com/mavlink/mavros/issues/1787>`_
+* Contributors: Vladimir Ermakov, rosrunne
+
+1.14.0 (2022-09-24)
+-------------------
+* libmavconn: fix MAVLink v1.0 output selection
+  Fix `#1787 <https://github.com/mavlink/mavros/issues/1787>`_
+* Merge pull request `#1775 <https://github.com/mavlink/mavros/issues/1775>`_ from acxz/find-geographiclib
+  use already installed FindGeographicLib.cmake
+* use already installed FindGeographicLib.cmake
+* Contributors: Vladimir Ermakov, acxz
+
 1.13.0 (2022-01-13)
 -------------------
 

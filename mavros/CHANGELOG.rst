@@ -2,6 +2,107 @@
 Changelog for package mavros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.17.0 (2023-09-09)
+-------------------
+* cog: regenerate all
+* Bugfix/update map origin with home position (`#1892 <https://github.com/mavlink/mavros/issues/1892>`_)
+  * Update map origin with home position
+  * Uncrustify
+  * Revert "Uncrustify"
+  This reverts commit f1387c79c7670cc241986586436e3da43842e877.
+  * Change to relative topic
+  ---------
+  Co-authored-by: Natalia Molina <molina-munoz@wingcopter.com>
+* Merge pull request `#1865 <https://github.com/mavlink/mavros/issues/1865>`_ from scoutdi/warnings
+  Fix / suppress some build warnings
+* mavros: Remove extra ';'
+* Suppress warnings from included headers
+* Contributors: Morten Fyhn Amundsen, Vladimir Ermakov, natmol
+
+1.16.0 (2023-05-05)
+-------------------
+* Merge pull request `#1829 <https://github.com/mavlink/mavros/issues/1829>`_ from snwu1996/latched_gp_origin_pub
+  Made it such that the gp_origin topic publisher is latched.
+* made it such that the gp_origin topic published latched.
+* Merge pull request `#1817 <https://github.com/mavlink/mavros/issues/1817>`_ from lucasw/pluginlib_hpp
+  use hpp instead of deprecated .h pluginlib headers
+* use hpp instead of deprecated .h pluginlib headers
+* Contributors: Lucas Walter, Shu-Nong Wu, Vladimir Ermakov
+
+1.15.0 (2022-12-30)
+-------------------
+* Merge pull request `#1806 <https://github.com/mavlink/mavros/issues/1806>`_ from scoutdi/fix-some-warnings
+  mavros: Fix some warnings
+* mavros: Fix some warnings
+* Contributors: Morten Fyhn Amundsen, Vladimir Ermakov
+
+1.14.0 (2022-09-24)
+-------------------
+* scripts: waypoint and param files are text, not binary
+  Fix `#1784 <https://github.com/mavlink/mavros/issues/1784>`_
+* Merge pull request `#1780 <https://github.com/mavlink/mavros/issues/1780>`_ from snktshrma/master
+  guided_target: accept position-target-global-int messages
+* plugins: add guided_target to accept offboard position targets
+  Update guided_target.cpp
+  Update guided_target.cpp
+  Update mavros_plugins.xml
+  Update CMakeLists.txt
+  Added offboard_position.cpp
+  Update apm_config.yaml
+  Update offboard_position.cpp
+  Update offboard_position.cpp
+  Rename offboard_position.cpp to guided_target.cpp
+  Update CMakeLists.txt
+  Update mavros_plugins.xml
+  Update apm_config.yaml
+  Update guided_target.cpp
+* Merge pull request `#1775 <https://github.com/mavlink/mavros/issues/1775>`_ from acxz/find-geographiclib
+  use already installed FindGeographicLib.cmake
+* add cmake module path for geographiclib on debian based systems
+* Merge pull request `#1744 <https://github.com/mavlink/mavros/issues/1744>`_ from amilcarlucas/pr_gimbal_diagnostics_fixes
+  mount_control.cpp: detect MOUNT_ORIENTATION stale messages
+* mount_control.cpp: detect MOUNT_ORIENTATION stale messages
+  correct MountConfigure response success
+  correct constructor initialization order
+  some gimbals send negated/inverted angle measurements, correct that to obey the MAVLink frame convention using run-time parameters
+* Merge pull request `#1743 <https://github.com/mavlink/mavros/issues/1743>`_ from amilcarlucas/pr_apm_config
+  apm_config.yaml: add mount configuration
+* apm_config.yaml: add mount configuration
+* Merge pull request `#1732 <https://github.com/mavlink/mavros/issues/1732>`_ from amilcarlucas/pr-meminfo-fix
+  MEMINFO fixes
+* sys_status.cpp fix free memory for values > 64KiB
+* Merge pull request `#1716 <https://github.com/mavlink/mavros/issues/1716>`_ from amilcarlucas/avoid-harcoded-values
+  sys_status.cpp: do not use harcoded constants
+* Merge pull request `#1711 <https://github.com/mavlink/mavros/issues/1711>`_ from amilcarlucas/diagnose-up-to-n-batteries
+  Diagnose up-to 10 batteries
+* *_config.yaml: document usage of multiple batteries diagnostics
+* sys_status.cpp: fix compilation
+* sys_status.cpp: support diagnostics on up-to 10 batteries
+  Uses as many battery monitors as the user specified in min_voltage parameter.
+  Add myself as a contributor, this is not my first patch to this file
+* Merge pull request `#1712 <https://github.com/mavlink/mavros/issues/1712>`_ from amilcarlucas/fix-disabled-diagnostics
+  sys_status.cpp: fix enabling of mem_diag and hwst_diag
+* sys_status.cpp: do not use harcoded constants
+* sys_status.cpp: Timeout on MEMINFO and HWSTATUS mavlink messages and publish on the diagnostics
+  Use atomic variable to prevent potential threading problems
+* sys_status.cpp: fix enabling of mem_diag and hwst_diag
+* Merge pull request `#1704 <https://github.com/mavlink/mavros/issues/1704>`_ from amilcarlucas/correct-bat-voltages
+  sys_status.cpp: Do not use battery1 voltage for all batteries.
+* sys_status.cpp: Do not use battery1 voltage as voltage for all other batteries (bugfix).
+  Support both cell and total voltages above 65V
+  Support up-to 14S batteries
+  If available, add cell voltage information to the battery diagnostic
+* Merge pull request `#1707 <https://github.com/mavlink/mavros/issues/1707>`_ from amilcarlucas/ignore-gimbal-sys-status
+  sys_status.cpp: ignore sys_status mavlink messages from gimbals
+* sys_status.cpp: ignore sys_status mavlink messages from gimbals
+* Merge pull request `#1703 <https://github.com/mavlink/mavros/issues/1703>`_ from amilcarlucas/remove-deprecated-battery2
+  sys_status.cpp: remove deprecated BATTERY2 mavlink message support
+* sys_status.cpp: remove deprecated BATTERY2 mavlink message support
+* Merge pull request `#1696 <https://github.com/mavlink/mavros/issues/1696>`_ from okalachev/patch-2
+  Disable startup_px4_usb_quirk in px4_config.yaml
+* Disable startup_px4_usb_quirk in px4_config.yaml
+* Contributors: Dr.-Ing. Amilcar do Carmo Lucas, Karthik Desai, Oleg Kalachev, Sanket Sharma, Vladimir Ermakov, acxz
+
 1.13.0 (2022-01-13)
 -------------------
 * Merge pull request `#1690 <https://github.com/mavlink/mavros/issues/1690>`_ from mavlink/fix-enum_sensor_orientation

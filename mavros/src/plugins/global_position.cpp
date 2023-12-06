@@ -48,6 +48,7 @@ public:
 
 	GlobalPositionPlugin() : PluginBase(),
 		gp_nh("~global_position"),
+		hp_nh("~home_position"),
 		tf_send(false),
 		use_relative_alt(true),
 		is_map_init(false),
@@ -84,12 +85,12 @@ public:
 		gp_hdg_pub = gp_nh.advertise<std_msgs::Float64>("compass_hdg", 10);
 
 		// global origin
-		gp_global_origin_pub = gp_nh.advertise<geographic_msgs::GeoPointStamped>("gp_origin", 10);
+		gp_global_origin_pub = gp_nh.advertise<geographic_msgs::GeoPointStamped>("gp_origin", 10, true);
 		gp_set_global_origin_sub = gp_nh.subscribe("set_gp_origin", 10, &GlobalPositionPlugin::set_gp_origin_cb, this);
 
 		// home position subscriber to set "map" origin
 		// TODO use UAS
-		hp_sub = gp_nh.subscribe("home", 10, &GlobalPositionPlugin::home_position_cb, this);
+		hp_sub = hp_nh.subscribe("home", 10, &GlobalPositionPlugin::home_position_cb, this);
 
 		// offset from local position to the global origin ("earth")
 		gp_global_offset_pub = gp_nh.advertise<geometry_msgs::PoseStamped>("gp_lp_offset", 10);
@@ -108,6 +109,7 @@ public:
 
 private:
 	ros::NodeHandle gp_nh;
+	ros::NodeHandle hp_nh;	//node handler in home_position namespace
 
 	ros::Publisher raw_fix_pub;
 	ros::Publisher raw_vel_pub;
@@ -511,5 +513,5 @@ private:
 }	// namespace std_plugins
 }	// namespace mavros
 
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 PLUGINLIB_EXPORT_CLASS(mavros::std_plugins::GlobalPositionPlugin, mavros::plugin::PluginBase)

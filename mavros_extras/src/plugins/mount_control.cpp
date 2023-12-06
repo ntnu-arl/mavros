@@ -166,8 +166,8 @@ class MountControlPlugin : public plugin::PluginBase {
 public:
 	MountControlPlugin() : PluginBase(),
 		nh("~"),
-		mount_diag("Mount"),
-		mount_nh("~mount_control")
+		mount_nh("~mount_control"),
+		mount_diag("Mount")
 	{ }
 
 	void initialize(UAS &uas_) override
@@ -351,5 +351,5 @@ private:
 }	// namespace extra_plugins
 }	// namespace mavros
 
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 PLUGINLIB_EXPORT_CLASS(mavros::extra_plugins::MountControlPlugin, mavros::plugin::PluginBase)
