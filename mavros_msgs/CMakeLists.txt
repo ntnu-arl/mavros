@@ -73,6 +73,7 @@ add_message_files(
   WaypointList.msg
   WaypointReached.msg
   WheelOdomStamped.msg
+  MagMux.msg
 )
 
 add_service_files(

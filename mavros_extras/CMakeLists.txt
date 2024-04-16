@@ -79,7 +79,7 @@ add_library(mavros_extras
   src/plugins/fake_gps.cpp
   src/plugins/gps_input.cpp
   src/plugins/gps_rtk.cpp
-  src/plugins/gps_status.cpp
+  # src/plugins/gps_status.cpp
   src/plugins/landing_target.cpp
   src/plugins/log_transfer.cpp
   src/plugins/mag_calibration_status.cpp
@@ -98,6 +98,7 @@ add_library(mavros_extras
   src/plugins/vision_speed_estimate.cpp
   src/plugins/wheel_odometry.cpp
   src/plugins/guided_target.cpp
+  src/plugins/mag_mux.cpp
 )
 add_dependencies(mavros_extras
   ${catkin_EXPORTED_TARGETS}
