@@ -55,9 +55,11 @@ private:
 
 		mag_mux_msg->header.stamp = m_uas->synchronise_stamp(magmux.time_usec);
 		// std::cout << magmux.mags[0] << std::endl;
-		for(int i=0;i<12;i++)
+		for (int i = 0; i < 4; i++)
 		{
-			mag_mux_msg->mags[i] = magmux.mags[i];
+			mag_mux_msg->mags[i].x = magmux.mags[i*3];
+			mag_mux_msg->mags[i].y = magmux.mags[i*3 + 1];
+			mag_mux_msg->mags[i].z = magmux.mags[i*3 + 2];
 		}
 
 		// mag_mux_msg->mag_mux[0].y = magmux.mags[1];
