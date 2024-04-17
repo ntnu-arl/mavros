@@ -35,7 +35,7 @@ public:
 	{
 		PluginBase::initialize(uas_);
 
-		mag_mux_pub = mag_mux_nh.advertise<mavros_msgs::MagMux>("mag_mux", 10);
+		mag_mux_pub = mag_mux_nh.advertise<mavros_msgs::MagMux>("raw", 10);
 	}
 
 	Subscriptions get_subscriptions() override
