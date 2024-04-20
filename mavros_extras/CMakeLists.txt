@@ -99,6 +99,7 @@ add_library(mavros_extras
   src/plugins/wheel_odometry.cpp
   src/plugins/guided_target.cpp
   src/plugins/mag_mux.cpp
+  src/plugins/mag_mux_calib.cpp
 )
 add_dependencies(mavros_extras
   ${catkin_EXPORTED_TARGETS}

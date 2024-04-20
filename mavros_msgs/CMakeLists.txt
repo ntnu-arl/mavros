@@ -74,6 +74,7 @@ add_message_files(
   WaypointReached.msg
   WheelOdomStamped.msg
   MagMux.msg
+  MagMuxCalib.msg
 )
 
 add_service_files(

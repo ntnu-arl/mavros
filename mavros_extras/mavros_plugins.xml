@@ -9,6 +9,9 @@
   <class name="mag_mux" type="mavros::extra_plugins::MagMuxPlugin" base_class_type="mavros::plugin::PluginBase">
     <description>Publish mag mux data.</description>
   </class>
+  <class name="mag_mux_calib" type="mavros::extra_plugins::MagMuxCalibPlugin" base_class_type="mavros::plugin::PluginBase">
+    <description>Publish mag mux calib data.</description>
+  </class>
   <class name="camera" type="mavros::extra_plugins::CameraPlugin" base_class_type="mavros::plugin::PluginBase">
     <description>Plugin for the mavlink camera protocol.</description>
   </class>
@@ -97,6 +100,6 @@
     <description>Send calibration status to ROS.</description>
   </class>
   <class name="guided_target" type="mavros::extra_plugins::GuidedTargetPlugin" base_class_type="mavros::plugin::PluginBase">
-     <description>Send guided target.</description>
-</class>
+    <description>Send guided target.</description>
+  </class>
 </library>
