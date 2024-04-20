@@ -49,23 +49,23 @@ private:
 	ros::NodeHandle mag_mux_calib_nh;
 	ros::Publisher mag_mux_calib_pub;
 
-	void handle_mag_mux_calib(const mavlink::mavlink_message_t *msg, mavlink::common::msg::mag_mux_calib &MagMuxCalib)
+	void handle_mag_mux_calib(const mavlink::mavlink_message_t *msg, mavlink::common::msg::MAG_MUX_CALIB &magmux)
 	{
 		auto mag_mux_calib_msg = boost::make_shared<mavros_msgs::MagMuxCalib>();
 
-		mag_mux_calib_msg->header.stamp = m_uas->synchronise_stamp(MagMuxCalib.time_usec);
+		mag_mux_calib_msg->header.stamp = m_uas->synchronise_stamp(magmux.time_usec);
 		// std::cout << MagMuxCalib.mags[0] << std::endl;
 		for (int i = 0; i < 4; i++)
 		{
-			mag_mux_calib_msg->xyz[i].x = MagMuxCalib.xyz[i*3];
-			mag_mux_calib_msg->xyz[i].y = MagMuxCalib.xyz[i*3 + 1];
-			mag_mux_calib_msg->xyz[i].z = MagMuxCalib.xyz[i*3 + 2];
-			mag_mux_calib_msg->center[i].x = MagMuxCalib.center[i*3];
-			mag_mux_calib_msg->center[i].y = MagMuxCalib.center[i*3 + 1];
-			mag_mux_calib_msg->center[i].z = MagMuxCalib.center[i*3 + 2];
-			mag_mux_calib_msg->max[i].x = MagMuxCalib.max[i*3];
-			mag_mux_calib_msg->max[i].y = MagMuxCalib.max[i*3 + 1];
-			mag_mux_calib_msg->max[i].z = MagMuxCalib.max[i*3 + 2];
+			mag_mux_calib_msg->xyz[i].x = magmux.xyz[i*3];
+			mag_mux_calib_msg->xyz[i].y = magmux.xyz[i*3 + 1];
+			mag_mux_calib_msg->xyz[i].z = magmux.xyz[i*3 + 2];
+			mag_mux_calib_msg->center[i].x = magmux.center[i*3];
+			mag_mux_calib_msg->center[i].y = magmux.center[i*3 + 1];
+			mag_mux_calib_msg->center[i].z = magmux.center[i*3 + 2];
+			mag_mux_calib_msg->max[i].x = magmux.max[i*3];
+			mag_mux_calib_msg->max[i].y = magmux.max[i*3 + 1];
+			mag_mux_calib_msg->max[i].z = magmux.max[i*3 + 2];
 		}
 
 		// mag_mux_calib_msg->mag_mux_calib[0].y = MagMuxCalib.mags[1];
