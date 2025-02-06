@@ -96,4 +96,7 @@
   <class name="tof_obstacles" type="mavros::extra_plugins::TimeOfFlightObstaclesPlugin" base_class_type="mavros::plugin::PluginBase">
     <description>Sends obstacles from TOF measurments.</description>
   </class>
+  <class name="cbf_debug" type="mavros::extra_plugins::CbfDebugPlugin" base_class_type="mavros::plugin::PluginBase">
+    <description>Sends the CBF safety filter debug information.</description>
+  </class>
 </library>
