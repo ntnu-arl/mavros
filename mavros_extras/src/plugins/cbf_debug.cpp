@@ -54,7 +54,7 @@ private:
   void handle_cbf_debug(const mavlink::mavlink_message_t* msg, mavlink::common::msg::CBF_DEBUG& cbf_debug)
   {
     _cbf_debug.header.stamp = m_uas->synchronise_stamp(cbf_debug.time_usec);
-    _cbf_debug.cbf_duration = cbf_duration.cbf_debug;
+    _cbf_debug.cbf_duration = cbf_debug.cbf_duration;
     _cbf_debug.qp_fail = cbf_debug.qp_fail;
     _cbf_debug.h = cbf_debug.h;
     _cbf_debug.h1 = cbf_debug.h1;
