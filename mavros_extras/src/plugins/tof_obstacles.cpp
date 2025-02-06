@@ -79,7 +79,7 @@ private:
                 //                 << " (total " << (int)chunk.num_points_total << ")");
                 ros::Duration(0.01).sleep();
             } catch (std::length_error e) {
-                ROS_ERROR(e.what());
+                ROS_ERROR("%s", e.what());
             }
         }
     }
