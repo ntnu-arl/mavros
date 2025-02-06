@@ -1,5 +1,6 @@
 std_msgs/Header header
 
+uint32 cbf_duration
 uint8 qp_fail
 
 float32 h
