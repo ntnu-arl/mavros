@@ -94,6 +94,9 @@
     <description>Send calibration status to ROS.</description>
   </class>
   <class name="guided_target" type="mavros::extra_plugins::GuidedTargetPlugin" base_class_type="mavros::plugin::PluginBase">
-     <description>Send guided target.</description>
-</class>
+    <description>Send guided target.</description>
+  </class>
+  <class name="tof_obstacles" type="mavros::extra_plugins::TimeOfFlightObstaclesPlugin" base_class_type="mavros::plugin::PluginBase">
+    <description>Sends obstacles from TOF measurments.</description>
+  </class>
 </library>
