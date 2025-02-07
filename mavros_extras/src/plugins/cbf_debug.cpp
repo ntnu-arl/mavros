@@ -16,6 +16,7 @@
 
 #include <mavros/mavros_plugin.h>
 #include <mavros_msgs/CbfDebug.h>
+#include <geometry_msgs/TwistStamped.h>
 
 namespace mavros
 {
@@ -34,7 +35,9 @@ public:
 	{
 		PluginBase::initialize(uas_);
 
-		cbf_debug_pub = nh.advertise<mavros_msgs::CbfDebug>("cbf/debug", 10);
+        cbf_debug_pub = nh.advertise<mavros_msgs::CbfDebug>("cbf/debug", 10);
+        cbf_inacc_pub = nh.advertise<geometry_msgs::TwistStamped>("cbf/debug/acc_input", 10);
+        cbf_outacc_pub = nh.advertise<geometry_msgs::TwistStamped>("cbf/debug/acc_output", 10);
 	}
 
 	Subscriptions get_subscriptions() override
@@ -48,8 +51,12 @@ public:
 private:
 	ros::NodeHandle nh;
 
-	ros::Publisher cbf_debug_pub;
-	mavros_msgs::CbfDebug _cbf_debug;
+    ros::Publisher cbf_debug_pub;
+    mavros_msgs::CbfDebug _cbf_debug;
+    ros::Publisher cbf_inacc_pub;
+    geometry_msgs::TwistStamped _cbf_input_acc;
+    ros::Publisher cbf_outacc_pub;
+    geometry_msgs::TwistStamped _cbf_output_acc;
 
   void handle_cbf_debug(const mavlink::mavlink_message_t* msg, mavlink::common::msg::CBF_DEBUG& cbf_debug)
   {
@@ -68,7 +75,21 @@ private:
     _cbf_debug.slack.x = cbf_debug.slack[0];
     _cbf_debug.slack.y = cbf_debug.slack[1];
 
+    _cbf_input_acc.header.stamp = m_uas->synchronise_stamp(cbf_debug.time_usec);
+    _cbf_input_acc.header.frame_id = "base_link";
+    _cbf_input_acc.twist.linear.x = cbf_debug.input[0];
+    _cbf_input_acc.twist.linear.y = cbf_debug.input[1];
+    _cbf_input_acc.twist.linear.z = cbf_debug.input[2];
+
+    _cbf_output_acc.header.stamp = m_uas->synchronise_stamp(cbf_debug.time_usec);
+    _cbf_output_acc.header.frame_id = "base_link";
+    _cbf_output_acc.twist.linear.x = cbf_debug.output[0];
+    _cbf_output_acc.twist.linear.y = cbf_debug.output[1];
+    _cbf_output_acc.twist.linear.z = cbf_debug.output[2];
+
     cbf_debug_pub.publish(_cbf_debug);
+    cbf_inacc_pub.publish(_cbf_input_acc);
+    cbf_outacc_pub.publish(_cbf_output_acc);
   }
 };
 }	// namespace extra_plugins
