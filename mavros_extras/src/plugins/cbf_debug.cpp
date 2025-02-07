@@ -78,14 +78,14 @@ private:
     _cbf_input_acc.header.stamp = m_uas->synchronise_stamp(cbf_debug.time_usec);
     _cbf_input_acc.header.frame_id = "base_link";
     _cbf_input_acc.twist.linear.x = cbf_debug.input[0];
-    _cbf_input_acc.twist.linear.y = cbf_debug.input[1];
-    _cbf_input_acc.twist.linear.z = cbf_debug.input[2];
+    _cbf_input_acc.twist.linear.y = -cbf_debug.input[1];   // from NED
+    _cbf_input_acc.twist.linear.z = -cbf_debug.input[2];   // from NED
 
     _cbf_output_acc.header.stamp = m_uas->synchronise_stamp(cbf_debug.time_usec);
     _cbf_output_acc.header.frame_id = "base_link";
     _cbf_output_acc.twist.linear.x = cbf_debug.output[0];
-    _cbf_output_acc.twist.linear.y = cbf_debug.output[1];
-    _cbf_output_acc.twist.linear.z = cbf_debug.output[2];
+    _cbf_output_acc.twist.linear.y = -cbf_debug.output[1];   // from NED
+    _cbf_output_acc.twist.linear.z = -cbf_debug.output[2];   // from NED
 
     cbf_debug_pub.publish(_cbf_debug);
     cbf_inacc_pub.publish(_cbf_input_acc);
